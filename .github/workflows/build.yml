@@ -22,13 +22,17 @@ jobs:
     - name: Create directories
       run: mkdir -p bin
       
-    - name: Compile
+    - name: Compile main app
+      run: make
+      
+    - name: Run all tests
+      run: make test
+      
+    - name: Run tests with gcov (coverage)
       run: |
-        gcc -Wall -Wextra -c src/*.c -Iincludes
-        gcc -o bin/app *.o -lsqlite3
-        rm *.o
-        
-    - name: Run tests
-      run: |
-        gcc -Wall -Wextra tests/*.c -o bin/tests -lsqlite3
-        ./bin/tests
+        sudo apt-get install -y lcov
+        gcc -Wall -Wextra -fprofile-arcs -ftest-coverage -Iincludes tests/test_auth.c src/*.c -o bin/test_coverage -lsqlite3
+        ./bin/test_coverage
+        gcov -b src/*.c
+        lcov --capture --directory . --output-file coverage.info
+        lcov --list coverage.info
