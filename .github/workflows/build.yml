@@ -28,11 +28,9 @@ jobs:
     - name: Run all tests
       run: make test
       
-    - name: Run tests with gcov (coverage)
+    - name: Run tests with coverage
       run: |
         sudo apt-get install -y lcov
-        gcc -Wall -Wextra -fprofile-arcs -ftest-coverage -Iincludes tests/test_auth.c src/*.c -o bin/test_coverage -lsqlite3
-        ./bin/test_coverage
-        gcov -b src/*.c
-        lcov --capture --directory . --output-file coverage.info
+        make test-coverage
+        lcov --capture --directory . --output-file coverage.info --ignore-errors mismatch
         lcov --list coverage.info
