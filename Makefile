@@ -9,8 +9,7 @@ OBJS = $(SRCS:$(SRC_DIR)/%.c=%.o)
 TARGET = $(BIN_DIR)/app
 
 # Список всех тестов
-TESTS = tests/test_auth.c tests/test_db.c tests/test_workshop.c \
-        tests/test_car.c tests/test_repair.c tests/test_report.c
+TESTS = test_auth test_db test_workshop test_car test_repair test_report
 
 all: $(BIN_DIR) $(TARGET)
 
@@ -24,14 +23,18 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Запуск всех тестов
-test: $(BIN_DIR)
+test: $(BIN_DIR) $(SRCS)
 	@echo "=========================================="
 	@echo "Running all tests..."
 	@echo "=========================================="
 	@for test in $(TESTS); do \
-		echo "Compiling $$test..."; \
-		$(CC) $(CFLAGS) $$test $(SRCS) -o $(BIN_DIR)/test_$$(basename $$test .c) $(LIBS) 2>/dev/null; \
-		$(BIN_DIR)/test_$$(basename $$test .c); \
+		echo "Compiling tests/$$test.c..."; \
+		$(CC) $(CFLAGS) tests/$$test.c $(SRCS) -o $(BIN_DIR)/$$test $(LIBS) 2>/dev/null; \
+		if [ -f $(BIN_DIR)/$$test ]; then \
+			./$(BIN_DIR)/$$test; \
+		else \
+			echo "  FAILED to compile $$test"; \
+		fi \
 	done
 	@echo "=========================================="
 	@echo "All tests completed!"
