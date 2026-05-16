@@ -4,7 +4,8 @@ LIBS = -lsqlite3
 SRC_DIR = src
 BIN_DIR = bin
 
-SRCS = $(wildcard $(SRC_DIR)/*.c)
+# Все исходники, КРОМЕ main.c (для тестов)
+SRCS = $(filter-out $(SRC_DIR)/main.c, $(wildcard $(SRC_DIR)/*.c))
 TARGET = $(BIN_DIR)/app
 TEST_TARGET = $(BIN_DIR)/test_all
 
@@ -13,10 +14,11 @@ all: $(BIN_DIR) $(TARGET)
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-$(TARGET): $(SRCS)
+# Основное приложение (с main.c)
+$(TARGET): $(SRCS) $(SRC_DIR)/main.c
 	$(CC) $(CFLAGS) -o $(TARGET) $^ $(LIBS)
 
-# Запуск всех тестов
+# Запуск всех тестов (без main.c)
 test: $(BIN_DIR) $(SRCS) tests/test_all.c
 	$(CC) $(CFLAGS) tests/test_all.c $(SRCS) -o $(TEST_TARGET) $(LIBS)
 	./$(TEST_TARGET)
