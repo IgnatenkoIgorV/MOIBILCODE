@@ -1,0 +1,36 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install SQLite
+      run: sudo apt-get install -y sqlite3 libsqlite3-dev
+      
+    - name: Create database
+      run: sqlite3 automasters.db < database.sql
+      
+    - name: Create directories
+      run: mkdir -p bin
+      
+    - name: Compile
+      run: |
+        gcc -Wall -Wextra -c src/*.c -Iincludes
+        gcc -o bin/app *.o -lsqlite3
+        rm *.o
+        
+    - name: Run tests (if exist)
+      run: |
+        if [ -d "tests" ]; then
+          gcc -Wall -Wextra tests/*.c -o bin/tests -lsqlite3
+          ./bin/tests
+        fi
