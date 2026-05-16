@@ -28,9 +28,7 @@ jobs:
         gcc -o bin/app *.o -lsqlite3
         rm *.o
         
-    - name: Run tests (if exist)
+    - name: Run tests
       run: |
-        if [ -d "tests" ]; then
-          gcc -Wall -Wextra tests/*.c -o bin/tests -lsqlite3
-          ./bin/tests
-        fi
+        gcc -Wall -Wextra tests/*.c -o bin/tests -lsqlite3
+        ./bin/tests

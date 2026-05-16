@@ -19,6 +19,11 @@ $(TARGET): $(OBJS)
 %.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+test:
+	mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) tests/*.c -o $(BIN_DIR)/tests $(LIBS)
+	./$(BIN_DIR)/tests
+
 clean:
 	rm -f *.o $(TARGET)
 	rm -rf $(BIN_DIR)
@@ -26,4 +31,4 @@ clean:
 run: $(TARGET)
 	./$(TARGET)
 
-.PHONY: all clean run
+.PHONY: all clean run test
