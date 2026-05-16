@@ -109,3 +109,7 @@ INSERT INTO master_stats (master_id, repair_type, repairs_count) VALUES
 (4, 'Замена масла', 1),
 (5, 'Покраска кузова', 1);
 
+
+-- Добавление колонки для фото
+ALTER TABLE cars ADD COLUMN photo BLOB;
+UPDATE cars SET photo = 'test_photo_data' WHERE license_plate = 'A123BC';
